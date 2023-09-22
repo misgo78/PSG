@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ rencontre.domicile }} - {{ rencontre.exterieur }}
+{% endblock %}
+{% block stylesheets %}
+<link href="../css/home.css" rel="stylesheet">
+<style>
+    .profile-image {
+        max-width: 350px;
+        height: auto;
+        width: 100%;
+        display: block;
+    }
+
+    .text-black {
+        color: black;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+<h1 class="my-3">Les détails du match </h1> 
+</div>
+<div class="ad-title">
+    <div class="container">
+        {% set url1 = path('rencontre_delete' , {'id': rencontre.id}) %}
+		{% set url2 = path('rencontre_edit' , {'id': rencontre.id}) %}
+        <div class="card" style="background-color: rgba(255, 255, 255, 0.47);">
+        <div class="row">
+                <div class="col-md-4">
+                    <img src="{{ rencontre.rencontreImage }}" class="profile-image">
+                </div>
+                <div class="col-md-8">
+                    <h1 class="card-header text-black">
+                        {{ rencontre.domicile }} - {{ rencontre.exterieur }}
+                    </h1>
+                
+                <div class="card-body">
+                <p class="h4 text-black">
+                    Le <strong>{{ rencontre.dateRencontre|date("d/m/Y") }} </strong> à <strong>{{ rencontre.stade }}</strong> 
+                </p>
+
+                {% if rencontre.dateRencontre >= aujourdhui %}
+                    <p class="h4 text-black">
+                        Score du match :<strong> Match à Venir</strong> 
+                    </p>
+                {% else %}
+                    <p class="h4 text-black">
+                        Score du match :{{ rencontre.domicile }} <strong>{{ rencontre.Score }}</strong> {{ rencontre.exterieur }} 
+                    </p>
+                {% endif %}
+
+                <p class="h4 text-black">
+                    Compétition : <strong>{{ competition }}</strong>
+                </p>
+
+                <a href="{{ path('rencontre_index') }}" class="btn btn-primary"><img src="{{ asset('icons/arrow-left-square.svg') }}">Retourner à la liste des rencontres</a>
+            
+                {% if rencontre.dateRencontre > aujourdhui %}
+                    <a href="{{ path('billetterie')}}" style="float:right;" class="btn btn-primary">Accéder à la billetterie</a>
+                {% endif %}
+
+                {% if is_granted('ROLE_EDITOR') %}
+                    <a href="{{ url1 }}" style="float:right;" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette rencontre ?')"><img src="{{ asset('icons/trash-fill.svg') }}" alt="icon2"></a>
+                    <a href="{{ url2 }}" style="float:right;" class="btn btn-success"><img src="{{ asset('icons/pencil-square.svg') }}"></a>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

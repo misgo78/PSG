@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos rencontres{% endblock %}
+{% block stylesheets %}
+ <link href="../css/home.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+{% if is_granted('ROLE_EDITOR') %}
+    <a href="{{path('rencontre_create')}}" style="float:right;" class="btn btn-primary">Ajouter une rencontre</a>
+{% endif %}
+ <h1 class="my-3">Voici le calendrier de cette saison !</h1>   
+    		    <div class="mb-3">
+        <label for="competitionSelect" class="form-label">Sélectionner par compétition :</label>
+        <select id="competitionSelect" class="form-select">
+            <option value="">Toutes les compétitions</option>
+            <option value="4">Match Amical</option>
+            <option value="3">Ligue des champions</option>
+            <option value="2">Coupe de france</option>
+            <option value="1">Ligue 1 Uber Eats</option>
+        </select>
+    </div>
+
+ <div class="row">
+    {% for rencontre in rencontre %}
+        {% set url = path('rencontre_show' , {'id' : rencontre.id})%}
+        {% set url1 = path('rencontre_delete' , {'id': rencontre.id}) %}
+		{% set url2 = path('rencontre_edit' , {'id': rencontre.id}) %}
+        
+        <div class="card border-secondary col-md-6"style="background-color:rgba(255, 255, 255, 0.47); display: flex; flex-direction: column;">
+                <div class="card-header text-center">
+                    </div>
+
+                    <img src="{{rencontre.rencontreImage}}" alt="Rencontre 1" style="height: 300px; width: auto; object-fit: cover;">
+
+                    <div class="card-body" data-competition-id="{{rencontre.getCompetition().id}}">
+                        <h4 class="card-title">
+                        {{rencontre.domicile}} - {{rencontre.exterieur}}
+                        </h4>
+                        {% if rencontre.dateRencontre > currentDate %}
+                            <h6> Score du match : Rencontre à venir</h6>
+                        {% else %}
+                            <h6> Score du match : {{rencontre.score}}</h6>
+                        {% endif %}
+                        <a href="{{url}}" class="btn btn-primary">En savoir plus<img src="{{asset('icons/info-circle-fill.svg')}}"></a>
+                        {% if is_granted('ROLE_EDITOR') %}
+                        <a href="{{url1}}" style="float:right;" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette rencontre du panier ?')"><img src="{{asset('icons/trash-fill.svg')}}"></a>
+						<a href="{{url2}}" style="float:right;" class="btn btn-success" ><img src="{{asset('icons/pencil-square.svg')}}"></a>
+                        {% endif %}
+                </div>
+            </div> 
+    
+        {% endfor %}
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const competitionSelect = document.getElementById('competitionSelect');
+        const rencontres = document.querySelectorAll('.card-body');
+
+        competitionSelect.addEventListener('change', function() {
+            const selectedCompetition = competitionSelect.value;
+            console.log(selectedCompetition)
+            rencontres.forEach(rencontre => {	
+                			
+                const competitionId = rencontre.getAttribute('data-competition-id');
+				const rencontreCard = rencontre.parentNode;
+                if (selectedCompetition === competitionId) {
+                    rencontreCard.style.display = 'flex';
+					
+                } else if (selectedCompetition === ""){
+                    rencontreCard.style.display = 'flex';
+                } else {
+                    rencontreCard.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

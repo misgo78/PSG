@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'un joueur{% endblock %}
+{% block stylesheets %}
+ <link href="../css/home.css" rel="stylesheet">
+ <style>
+        /* Style pour les labels en gras */
+        label {
+            font-weight: bold;
+        }
+
+        /* Style pour les champs entourés de noir */
+        input[type="text"],
+        input[type="email"],
+        input[type="textarea"],
+        textarea {
+            border: 3px solid black;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+        <h1>Créer un nouveau joueur</h1>
+
+        {{ form_start(form, {'attr': {'class': 'label'}}) }}
+        
+        {{ form_widget(form) }}
+
+        <button type="submit" class="btn btn-primary">Créer le nouveau joueur</button>
+
+        {{ form_end(form) }}
+    </div> 
+
+{% endblock %}

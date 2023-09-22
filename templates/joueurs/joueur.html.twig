@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos joueurs{% endblock %}
+{% block stylesheets %}
+	<link href="../css/home.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+	<div class="container">
+        {% if is_granted('ROLE_EDITOR') %}
+			<a href="{{path('joueur_create')}}" style="float:right;" class="btn btn-primary">Ajouter un joueur</a>
+		{% endif %}
+		<h1 class="my-3">Voici nos joueurs !</h1>
+
+		    <div class="mb-3">
+        <label for="posteSelect" class="form-label">Sélectionner par poste :</label>
+        <select id="posteSelect" class="form-select">
+            <option value="">Tous les postes</option>
+            <option value="4">Attaquant</option>
+            <option value="3">Milieu</option>
+            <option value="2">Défenseur</option>
+            <option value="1">Gardien</option>
+        </select>
+    </div>
+
+
+		
+		<div class="row">
+			{% for joueur in joueur %}
+				{% set url = path('joueur_show' , {'id': joueur.id}) %}
+				{% set url1 = path('joueur_delete' , {'id': joueur.id}) %}
+				{% set url2 = path('joueur_edit' , {'id': joueur.id}) %}
+
+
+				<div class="card border-secondary col-md-4" style="background-color: rgba(255, 255, 255, 0.47); display: flex; flex-direction: column;">
+    <div class="card-header text-center"></div>
+
+    <div style="flex: 1;">
+        <img src="{{ joueur.personneImage }}" alt="Rencontre 1" style="height: 400px; width: auto; object-fit: cover;">
+    </div>
+	
+    <div class="card-body" data-poste-id="{{ joueur.getPoste().id}}" >
+		
+        <h4 class="card-title">
+            {{ joueur.prenom }} {{ joueur.nom }}
+        </h4>
+        <a href="{{ url }}" class="btn btn-primary" >
+			En savoir plus <img src="{{asset('icons/info-circle-fill.svg')}}">
+		</a>
+        {% if is_granted('ROLE_EDITOR') %}
+            <a href="{{ url1 }}" style="float: right;" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer ce joueur ?')" ><img src="{{asset('icons/trash-fill.svg')}}"> </a>
+            <a href="{{ url2 }}" style="float: right;" class="btn btn-success"><img src="{{asset('icons/pencil-square.svg')}}"></a>
+        {% endif %}
+    </div>
+</div>
+
+			{% endfor %}
+		</div>
+        </div>
+			<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const posteSelect = document.getElementById('posteSelect');
+        const joueurs = document.querySelectorAll('.card-body');
+
+        posteSelect.addEventListener('change', function() {
+            const selectedPoste = posteSelect.value;
+
+            joueurs.forEach(joueur => {				
+                const posteId = joueur.getAttribute('data-poste-id');
+				const joueurCard = joueur.parentNode;
+                if (selectedPoste === posteId) {
+                    joueurCard.style.display = 'flex';
+					
+                } else if (selectedPoste === ""){
+                    joueurCard.style.display = 'flex';
+                } else {
+                    joueurCard.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+	{% endblock %}
+
+	
+    

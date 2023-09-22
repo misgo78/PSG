@@ -1,0 +1,32 @@
+<style>
+    .menu-item {
+        font-size: 20px; 
+        color: black; 
+        text-decoration: none; 
+        margin: 0 10px; 
+    }
+
+    .navbar {
+        padding: 5px 0;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg" style="background-color: rgba(255, 255, 255, 0.47);">
+    <div class="container">
+        <a class="menu-item" href="{{ path('home') }}">Accueil</a>
+        <a class="menu-item" href="{{ path('clubs_index') }}">Equipe</a>
+        <a class="menu-item" href="{{ path('rencontre_index') }}">Calendrier</a>
+        <a class="menu-item" href="{{ path('billetterie') }}">Billetterie</a>
+        {% if is_granted('ROLE_ADMIN') %}
+        <a class="menu-item" href="{{ path('admin_utilisateurs') }}">Admin</a>
+        {% endif %}
+        {% if app.user == false %}
+        <a href="{{ path('app_login') }}" class="menu-item ml-auto">Mon compte</a>
+        {% endif %}
+        {% if app.user == true %}
+        <a class="menu-item" href="{{ path('panier') }}"><img src="{{ asset('icons/cart-fill.svg') }}"></a>
+        {# <span class="menu-item ml-auto">{{ app.user.username }}</span> #}
+        <a href="{{ path('app_logout') }}" class="menu-item ml-auto">Déconnexion</a>
+        {% endif %}
+    </div>
+</nav>

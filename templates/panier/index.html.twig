@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre Panier{% endblock %}
+
+{% block stylesheets %}
+    <link href="../css/home.css" rel="stylesheet">
+    <style>
+        @media screen and (max-width: 768px) {
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 4px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h2>Votre Panier</h2>
+    {% if rencontres|length == 0 %}
+        <p>Votre panier est vide</p>
+        <p>Rendez-vous dans l'onglet "Rencontre" pour en ajouter dans le panier</p> 
+    {% else %}
+        <div class="table-responsive">
+            <table class="table" style="background-color:rgba(255, 255, 255, 0.47);">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Rencontre</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set total = 0 %}
+                    {% for rencontre in rencontres %}
+                        <tr>
+                            <td><img src="{{ rencontre.rencontreImage }}" alt="Image de la rencontre" style="height: 50px;"></td>
+                            <td>{{ rencontre.domicile }} - {{ rencontre.exterieur }}</td>
+                            <td>
+                                <select name="quantite" id="quantite-{{ rencontre.id }}" onchange="updateTotal({{ rencontre.id }}, {{ rencontre.prix }})">
+                                    {% for i in 1..10 %}
+                                        <option value="{{ i }}" {% if quantite[rencontre.id] == i %}selected{% endif %}>{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>{{ rencontre.prix }} €</td>
+                            <td id="total-{{ rencontre.id }}">{{ rencontre.prix * quantite[rencontre.id] ?? 0 }} €</td>
+                            <td>{{ rencontre.dateRencontre|date("d/m/Y") }}</td>
+                            <td><a href="{{ path('supprimer_du_panier', {'id': rencontre.id}) }}" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette rencontre du panier ?')"><img src="{{ asset('icons/trash-fill.svg') }}"></a></td>
+                        </tr>
+                        {% set total = total + (rencontre.prix * quantite[rencontre.id] ?? 0) %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="h4" style="background-color:rgba(255, 255, 255, 0.47);">Total du panier : <span id="panier-total">{{ total }} €</span></p>
+        <a href="{{path('payment')}}" class="btn btn-primary">Aller au paiement</a>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function updateTotal(rencontreId, prixUnitaire) {
+            var quantiteSelect = document.getElementById('quantite-' + rencontreId);
+            var nouvelleQuantite = parseInt(quantiteSelect.value);
+
+            var totalLigne = prixUnitaire * nouvelleQuantite;
+            document.getElementById('total-' + rencontreId).textContent = totalLigne.toFixed(2) + ' €';
+
+            var totalPanier = 0;
+            var lignesTotal = document.querySelectorAll('[id^="total-"]');
+            lignesTotal.forEach(function(element) {
+                totalPanier += parseFloat(element.textContent);
+            });
+            document.getElementById('panier-total').textContent = totalPanier.toFixed(2) + ' €';
+        }
+    </script>
+{% endblock %}

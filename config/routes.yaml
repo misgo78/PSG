@@ -1,0 +1,11 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+payment_success:
+    path: /payment/success
+    controller: App\Controller\PaymentController::successAction
+
+payment_cancel:
+    path: /payment/cancel
+    controller: App\Controller\PaymentController::cancelAction

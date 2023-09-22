@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link href="../css/home.css" rel="stylesheet">
+<style>
+    .profile-image {
+        max-width: 200px;
+        height: auto;
+    }
+
+    .text-black {
+        color: black;
+    }
+</style>
+{% endblock %}
+
+{% block title %}
+    {{ joueur.prenom }} {{ joueur.nom }}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h1 class="my-3">Les détails du joueur </h1> 
+</div>
+
+<div class="ad-title">
+    <div class="container">
+        <div class="card" style="background-color: rgba(255, 255, 255, 0.47);">
+            <div class="row">
+                <div class="col-md-4"> 
+                    <img src="{{ joueur.personneImage }}" class="profile-image">
+                </div>
+                <div class="col-md-8">
+                    <h1 class="card-header text-black">
+                        {{ joueur.prenom }} {{ joueur.nom }}
+                    </h1>
+                    <div class="card-body">
+                        <p class="h3 text-black">
+                            Poste: {{ nomPoste }}
+                        </p>
+                        <p class="h3 text-black">
+                            Nationalité: <strong>{{ joueur.nationalite }}</strong>
+                        </p>
+                        <p class="h3 text-black">
+                            Date d'arrivée au club : <strong>{{ joueur.dateArrivee|date("d/m/Y") }}</strong>
+                        </p>
+                        <p class="h3 text-black">
+                            Date de naissance: <strong>{{ joueur.dateNaiss|date("d/m/Y") }}</strong>
+                        </p>
+                        <p class="h3 text-black">
+                            Age: <strong>{{ age }} ans</strong>
+                        </p>
+                        <a href="{{ path('joueur_index') }}" class="btn btn-primary"><img src="{{ asset('icons/arrow-left-square.svg') }}">Retourner à la liste des joueurs</a>
+
+                        {% if is_granted('ROLE_EDITOR') %}
+                        <a href="{{ path('joueur_edit', {'id': joueur.id}) }}" style="float:right;" class="btn btn-success"><img src="{{ asset('icons/pencil-square.svg') }}"></a>
+                        <a href="{{ path('joueur_delete', {'id': joueur.id}) }}" style="float:right;" class="btn btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer ce joueur ?')"><img src="{{ asset('icons/trash-fill.svg') }}" alt="icon2"></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

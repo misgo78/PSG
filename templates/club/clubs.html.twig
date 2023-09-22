@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Equipe{% endblock %}
+{% block stylesheets %}
+ <link href="../css/home.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+<div class="container">
+        <h1 class="my-3">Voici notre équipe !</h1>
+
+    <div class="row">
+            <div class="col-md-12">
+                    <div class="card-header text-center mx-auto">
+                    <a href="#">
+                        <img src="https://s.hs-data.com/bilder/teamfotos/640x360/563.jpg" alt="Image de l'équipe" style="height: 400px; width: 50%; display: block mx-auto">
+                        <ul><a href="{{path('joueur_index')}}" class="btn btn-danger">Cliquez ici pour voir nos joueurs !</a></ul>
+                        
+                    </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

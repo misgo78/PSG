@@ -1,0 +1,59 @@
+{# templates/payment/payment.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Page de paiement{% endblock %}
+
+{% block body %}
+    <div class="payment-form">
+        <!-- Formulaire de paiement Stripe -->
+        <form id="payment-form">
+            <div class="form-row">
+                <label for="card-element">
+                    Carte de crédit ou de débit
+                </label>
+                <div id="card-element">
+                    <!-- Un élément qui sert de conteneur pour l'interface utilisateur du formulaire de carte -->
+                </div>
+
+                <!-- Utilisé pour afficher des erreurs de validation -->
+                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <button id="submit-button" class="btn btn-primary">Payer</button>
+        </form>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Configurez Stripe.js avec votre clé publique
+        var stripe = Stripe('pk_test_51NnGSHKcY8OEvdclklE9tnK8cZM2qCl3dqrsyPPU3UhZaJITi2e1zQhaXUfWGFoN8N5WVcyUgee2qPUFdyP4qgQo00EF3c5OgI');
+
+        // Créez un élément de carte pour le formulaire de paiement
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+
+        // Ajoutez l'élément de carte au formulaire
+        cardElement.mount('#card-element');
+
+        // Gérez la soumission du formulaire
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(cardElement).then(function(result) {
+                if (result.error) {
+                    // Gérer les erreurs de validation de la carte
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Envoyez le jeton de paiement à votre serveur pour traitement
+                    // Vous pouvez utiliser AJAX pour cela
+
+                    // Une fois le paiement traité avec succès, redirigez l'utilisateur vers la page de confirmation
+                    window.location.href = '{{ path('confirmation_route') }}';
+                }
+            });
+        });
+    </script>
+{% endblock %}
